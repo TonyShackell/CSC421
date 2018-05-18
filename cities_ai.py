@@ -41,9 +41,12 @@ def compute_euclidean_distances():
             DISTANCES[neighbouring_city][city_number] = city_distance
 
 def generate_edges():
+    # TODO: possibly - if the edge exists between two nodes already, do we want to discard
+    # and take the next closest neighbour?
+    
     for city in range(len(DISTANCES)):
         number_of_edges = random.randint(1, 4)
-        # get closest neighbours and get rid of self-loop
+        # get closest neighbours and get rid of self-loop (will always be at start of closest neighbour list)
         closest_neighbours = np.argsort(DISTANCES[city])[:number_of_edges + 1][1:]
         print closest_neighbours
         for neighbour in closest_neighbours:
