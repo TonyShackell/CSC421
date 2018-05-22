@@ -118,9 +118,12 @@ def iterative_deepening_search(start_node, destination_node):
     for depth in range(WORLD_SIZE):
         # start will never be destination
         search_paths = [[start_node]]
-        cities_visited = [0 for x in range(WORLD_SIZE)]
 
+        #print "\nDepth:", depth
         while search_paths:
+            cities_visited = [0 for x in range(WORLD_SIZE)]
+
+            #print "SPs:", search_paths
             current_path = search_paths.pop()
             search_city = current_path[-1]
             cities_visited[search_city] = 1
@@ -163,6 +166,9 @@ def main():
 
     while destination_node == start_node:
         destination_node = random.randint(0, 25)
+
+    # for x in range(WORLD_SIZE):
+    #     print str(x) + ":", [(i, e) for i, e in enumerate(EDGES[x]) if e != 0]
 
     print "Start node: " + str(start_node) + "\nDestination Node: " + str(destination_node)
     print "Optimal Path (BFS):", breadth_first_search(start_node, destination_node)
