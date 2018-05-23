@@ -24,7 +24,7 @@ WORLD_SIZE = 26
 WORLD = [[] for x in range(WORLD_SIZE)]
 DISTANCES = np.zeros((WORLD_SIZE, WORLD_SIZE))
 EDGES = np.zeros((WORLD_SIZE, WORLD_SIZE))
-LABELS = dict(zip(range(1,27), string.ascii_uppercase))
+LABELS = dict(zip(range(0,26), string.ascii_uppercase))
 
 
 def generate_city_locations():
@@ -113,8 +113,6 @@ def depth_first_search(start_node, destination_node):
 
 
 def iterative_deepening_search(start_node, destination_node):
-    #TODO: make this efficient. Currently regenerates up to depth-1 paths
-    #also why is it not returning the shortest length?
 
     # because we dont allow cycles, we can have at most WORLD_SIZE-1 state transitions
     for depth in range(WORLD_SIZE):
@@ -147,9 +145,7 @@ def iterative_deepening_search(start_node, destination_node):
 
 
 def iterative_deepening_search_two(start_node, destination_node):
-    #TODO: make this efficient. Currently regenerates up to depth-1 paths
-    #also why is it not returning the shortest length?
-
+    # TODO: finish making this efficient. Currently regenerates up to depth-1 paths
     working_path_set = [[start_node]]
 
     # because we dont allow cycles, we can have at most WORLD_SIZE-1 state transitions
@@ -205,6 +201,8 @@ def setup():
 def main():
     setup()
 
+    print LABELS 
+
     start_node = random.randint(0, 25)
     destination_node = random.randint(0, 25)
 
@@ -214,10 +212,14 @@ def main():
     # for x in range(WORLD_SIZE):
     #     print str(x) + ":", [(i, e) for i, e in enumerate(EDGES[x]) if e != 0]
 
-    print "Start node: " + str(start_node) + "\nDestination Node: " + str(destination_node)
-    print "Optimal Path (BFS):", breadth_first_search(start_node, destination_node)
-    print "Possible non-optimal Path (DFS):", depth_first_search(start_node, destination_node)
-    print "Optimal Path (ID-DFS):", iterative_deepening_search_two(start_node, destination_node)
+    BFS = breadth_first_search(start_node, destination_node)
+    DFS = depth_first_search(start_node, destination_node)
+    IDDFS = iterative_deepening_search(start_node, destination_node)
+
+    print "Start node: " + LABELS[start_node] + "\nDestination Node: " + LABELS[destination_node]
+    print "Optimal Path (BFS):", [LABELS[x] for x in BFS] if BFS is not None else None
+    print "Possible non-optimal Path (DFS):", [LABELS[x] for x in DFS] if DFS is not None else None
+    print "Optimal Path (ID-DFS):", [LABELS[x] for x in IDDFS] if IDDFS is not None else None
 
     # display the city locations on a plot
     # plt.plot([x[0] for x in WORLD], [y[1] for y in WORLD], 'ro')
