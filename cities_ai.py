@@ -16,6 +16,7 @@
 import random
 import math
 import numpy as np
+import string
 import matplotlib.pyplot as plt
 
 WORLD_SIZE = 26
@@ -23,6 +24,7 @@ WORLD_SIZE = 26
 WORLD = [[] for x in range(WORLD_SIZE)]
 DISTANCES = np.zeros((WORLD_SIZE, WORLD_SIZE))
 EDGES = np.zeros((WORLD_SIZE, WORLD_SIZE))
+LABELS = dict(zip(range(1,27), string.ascii_uppercase))
 
 
 def generate_city_locations():
@@ -144,6 +146,48 @@ def iterative_deepening_search(start_node, destination_node):
     return None
 
 
+def iterative_deepening_search_two(start_node, destination_node):
+    #TODO: make this efficient. Currently regenerates up to depth-1 paths
+    #also why is it not returning the shortest length?
+
+    working_path_set = [[start_node]]
+
+    # because we dont allow cycles, we can have at most WORLD_SIZE-1 state transitions
+    for depth in range(1, WORLD_SIZE):
+        # start will never be destination
+        search_paths = working_path_set[:]
+        print "\nworking_path_set:", working_path_set, "\nsearch paths:", search_paths
+
+        working_path_set = []
+
+        #print "\nDepth:", depth
+        while search_paths:
+            cities_visited = [0 for x in range(WORLD_SIZE)]
+
+            #print "SPs:", search_paths
+            current_path = search_paths.pop()
+
+            search_city = current_path[-1]
+            cities_visited[search_city] = 1
+
+            neighbours = [i for i, e in enumerate(EDGES[search_city]) if e != 0]
+            for neighbour in neighbours:
+                new_path = current_path[:]
+                new_path.append(neighbour)
+                if neighbour == destination_node:
+                    return new_path
+                else:
+                    if cities_visited[neighbour]:
+                        continue
+                    if len(new_path) < depth:
+                        search_paths.append(new_path)
+                    if len(new_path) == depth:
+                        working_path_set.append(new_path)
+
+
+    return None
+
+
 def best_first_search():
     pass
 
@@ -173,7 +217,7 @@ def main():
     print "Start node: " + str(start_node) + "\nDestination Node: " + str(destination_node)
     print "Optimal Path (BFS):", breadth_first_search(start_node, destination_node)
     print "Possible non-optimal Path (DFS):", depth_first_search(start_node, destination_node)
-    print "Optimal Path (ID-DFS):", iterative_deepening_search(start_node, destination_node)
+    print "Optimal Path (ID-DFS):", iterative_deepening_search_two(start_node, destination_node)
 
     # display the city locations on a plot
     # plt.plot([x[0] for x in WORLD], [y[1] for y in WORLD], 'ro')
